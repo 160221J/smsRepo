@@ -3,5 +3,5 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("sms starting")
+	fmt.Println("sms project starting")
 }
