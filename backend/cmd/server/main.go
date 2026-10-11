@@ -18,6 +18,10 @@ func main() {
 	hlo := hlr.NewHelloHandler()
 	r.GET("/api/hello", hlo.Get)
 
+	studentHandler := hlr.NewStudentHandler()
+	r.POST("/api/students", studentHandler.Create)
+	r.GET("/api/students", studentHandler.List)
+	r.GET("/api/students/:id", studentHandler.GetByID)
 	r.Run(":8090")
 
 }
