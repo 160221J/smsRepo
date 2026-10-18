@@ -4,22 +4,17 @@ import (
 	"net/http"
 	"strconv"
 	"student-management-system/internal/models"
-	"sync"
+	"student-management-system/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
-func NewStudentHandler() *StudentHandler {
-	return &StudentHandler{
-		students: make(map[int]models.Student),
-		nextID:   1,
-	}
+func NewStudentHandler(repo *repository.StudentRepository) *StudentHandler {
+	return &StudentHandler{repo: repo}
 }
 
 type StudentHandler struct {
-	students map[int]models.Student
-	mu       sync.Mutex
-	nextID   int
+	repo *repository.StudentRepository
 }
 
 func (h *StudentHandler) Create(c *gin.Context) {
@@ -35,27 +30,27 @@ func (h *StudentHandler) Create(c *gin.Context) {
 		return
 	}
 
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	s := models.Student{
-		ID: h.nextID, FirstName: req.FirstName, LastName: req.LastName,
-		Email: req.Email, Phone: req.Phone, Course: req.Course,
-	}
-	h.students[s.ID] = s
-	h.nextID++
+	s := h.repo.Create(models.Student{
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Email:     req.Email,
+		Phone:     req.Phone,
+		Course:    req.Course,
+	})
+
 	c.JSON(http.StatusCreated, s)
 	// assign id, store in map, c.JSON(201, saved)
 }
 
-func (h *StudentHandler) List(c *gin.Context) {
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	out := make([]models.Student, 0, len(h.students))
-	for _, s := range h.students {
-		out = append(out, s)
-	}
-	c.JSON(http.StatusOK, out)
-}
+// func (h *StudentHandler) List(c *gin.Context) {
+// 	h.mu.Lock()
+// 	defer h.mu.Unlock()
+// 	out := make([]models.Student, 0, len(h.students))
+// 	for _, s := range h.students {
+// 		out = append(out, s)
+// 	}
+// 	c.JSON(http.StatusOK, out)
+// }
 
 func (h *StudentHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -63,9 +58,8 @@ func (h *StudentHandler) GetByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 		return
 	}
-	//  h.mu.Lock()
-	//  defer h.mu.Unlock()
-	s, ok := h.students[id]
+
+	s, ok := h.repo.GetByID(id)
 	if !ok {
 		c.JSON(http.StatusNotFound, gin.H{"error": "student not found"})
 		return
