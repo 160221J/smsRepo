@@ -42,15 +42,10 @@ func (h *StudentHandler) Create(c *gin.Context) {
 	// assign id, store in map, c.JSON(201, saved)
 }
 
-// func (h *StudentHandler) List(c *gin.Context) {
-// 	h.mu.Lock()
-// 	defer h.mu.Unlock()
-// 	out := make([]models.Student, 0, len(h.students))
-// 	for _, s := range h.students {
-// 		out = append(out, s)
-// 	}
-// 	c.JSON(http.StatusOK, out)
-// }
+func (h *StudentHandler) List(c *gin.Context) {
+	out := h.repo.List()
+	c.JSON(http.StatusOK, out)
+}
 
 func (h *StudentHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

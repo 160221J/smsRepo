@@ -23,7 +23,7 @@ func main() {
 	var studentHandler *hlr.StudentHandler
 	studentHandler = hlr.NewStudentHandler(repository.NewStudentRepository())
 	r.POST("/api/students", studentHandler.Create)
-	// r.GET("/api/students", studentHandler.List)
+	r.GET("/api/students", studentHandler.List)
 	r.GET("/api/students/:id", studentHandler.GetByID)
 	r.Run(":8090")
 

@@ -33,3 +33,13 @@ func (r *StudentRepository) Create(studentModel models.Student) models.Student {
 	r.nextID++
 	return studentModel
 }
+
+func (r *StudentRepository) List() []models.Student {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	out := make([]models.Student, 0, len(r.students))
+	for _, s := range r.students {
+		out = append(out, s)
+	}
+	return out
+}
