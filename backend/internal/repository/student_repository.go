@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+	"student-management-system/internal/apperrors"
 	"student-management-system/internal/models"
 	"sync"
 )
@@ -18,11 +20,14 @@ func NewStudentRepository() *StudentRepository {
 	}
 }
 
-func (r *StudentRepository) GetByID(id int) (models.Student, bool) {
+func (r *StudentRepository) GetByID(id int) (models.Student, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	s, ok := r.students[id]
-	return s, ok
+	if !ok {
+		return models.Student{}, fmt.Errorf("student %d: %w", id, apperrors.ErrNotFound)
+	}
+	return s, nil
 }
 
 func (r *StudentRepository) Create(studentModel models.Student) models.Student {

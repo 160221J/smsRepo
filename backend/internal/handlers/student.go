@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
+	"student-management-system/internal/apperrors"
 	"student-management-system/internal/models"
 	"student-management-system/internal/repository"
 
@@ -38,6 +41,8 @@ func (h *StudentHandler) Create(c *gin.Context) {
 		Course:    req.Course,
 	})
 
+	slog.Info("student created", "student_id", s.ID, "first_name", s.FirstName)
+
 	c.JSON(http.StatusCreated, s)
 	// assign id, store in map, c.JSON(201, saved)
 }
@@ -54,9 +59,14 @@ func (h *StudentHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	s, ok := h.repo.GetByID(id)
-	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": "student not found"})
+	s, err2 := h.repo.GetByID(id)
+	if err2 != nil {
+		if errors.Is(err2, apperrors.ErrNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "student not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		}
+		slog.Error("get student failed", "err", err2)
 		return
 	}
 	c.JSON(http.StatusOK, s)

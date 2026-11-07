@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"student-management-system/internal/config"
 	hlr "student-management-system/internal/handlers"
 	"student-management-system/internal/repository"
 
@@ -11,6 +12,8 @@ import (
 
 func main() {
 	fmt.Println("sms project starting")
+
+	cfg := config.Load()
 
 	r := gin.Default()
 
@@ -25,7 +28,8 @@ func main() {
 	r.POST("/api/students", studentHandler.Create)
 	r.GET("/api/students", studentHandler.List)
 	r.GET("/api/students/:id", studentHandler.GetByID)
-	r.Run(":8090")
+	// r.Run(":8090")
+	r.Run(":" + cfg.Port)
 
 }
 
