@@ -13,7 +13,7 @@ type Config struct {
 }
 
 func Load() *Config {
-	if err := godotenv.Load("../../../.env.example"); err != nil {
+	if err := godotenv.Load(); err != nil {
 		slog.Info("no .env file; using process environment")
 	}
 	port := os.Getenv("PORT")
