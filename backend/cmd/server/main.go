@@ -22,28 +22,15 @@ func main() {
 	hlo := hlr.NewHelloHandler()
 	r.GET("/api/hello", hlo.Get)
 
-	// studentHandler := hlr.NewStudentHandler()
+	// studentHandler /api/students:= hlr.NewStudentHandler()
 	var studentHandler *hlr.StudentHandler
 	studentHandler = hlr.NewStudentHandler(repository.NewStudentRepository())
 	r.POST("/api/students", studentHandler.Create)
 	r.GET("/api/students", studentHandler.List)
 	r.GET("/api/students/:id", studentHandler.GetByID)
+	r.POST("/api/students/import", studentHandler.Import)
 	// r.Run(":8090")
+
 	r.Run(":" + cfg.Port)
 
 }
-
-// func FullName(first string, last string) (int, string) {
-// 	defer fmt.Println("DEFER 1")
-// 	defer fmt.Println("DEFER 2")
-// 	defer fmt.Println("DEFER 3")
-// 	fmt.Println("Calculating full name1...")
-// 	fmt.Println("Calculating full name2...")
-// 	return len(first + " " + last), first + " " + last
-// }
-
-// type HealthResponse struct {
-// 	Status  string `json:"status"`
-// 	Message string `json:"message"`
-// 	Count   int    `json:"count,omitempty"`
-// }
