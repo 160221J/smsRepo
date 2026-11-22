@@ -29,7 +29,6 @@ func main() {
 	r.GET("/api/students", studentHandler.List)
 	r.GET("/api/students/:id", studentHandler.GetByID)
 	r.POST("/api/students/import", studentHandler.Import)
-	// r.Run(":8090")
 
 	r.Run(":" + cfg.Port)
 
