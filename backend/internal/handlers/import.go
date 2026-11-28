@@ -44,7 +44,7 @@ func (h *StudentHandler) Import(c *gin.Context) {
 					outcomes <- outcome{err: errImportValidation}
 					continue
 				}
-				_ = h.repo.Create(models.Student{
+				_ = h.repo.Create(c.Request.Context(), models.Student{
 					FirstName: req.FirstName,
 					LastName:  req.LastName,
 					Email:     req.Email,

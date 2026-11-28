@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"student-management-system/internal/apperrors"
 	"student-management-system/internal/models"
@@ -30,7 +31,8 @@ func (r *StudentRepository) GetByID(id int) (models.Student, error) {
 	return s, nil
 }
 
-func (r *StudentRepository) Create(studentModel models.Student) models.Student {
+func (r *StudentRepository) Create(ctx context.Context, studentModel models.Student) models.Student {
+	_ = ctx
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	studentModel.ID = r.nextID

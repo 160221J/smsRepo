@@ -32,8 +32,8 @@ func (h *StudentHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "first_name, email, and course are required"})
 		return
 	}
-
-	s := h.repo.Create(models.Student{
+	ctx := c.Request.Context()
+	s := h.repo.Create(ctx, models.Student{
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Email:     req.Email,
